@@ -42,5 +42,30 @@ def getCurFundData():
     return datas
 
 
-# def getHistoryFundData():
+def getHistoryFundData(code):
+    datas = []
+    url = "http://info.chinafund.cn/fund/" + code + "/jjjz/"
+    r = requests.get(url)
+    if r.encoding == 'ISO-8859-1':
+        encodings = requests.utils.get_encodings_from_content(r.text)
+        if encodings:
+            encoding = encodings[0]
+        else:
+            encoding = r.apparent_encoding
+        html_doc = r.content.decode(encoding, 'replace')
+
+    soup = BeautifulSoup(html_doc, 'lxml')
+    trs = soup.find_all(id='lsjz')
+    tr = trs[0].find_all('tr')
+    for i in range(1, len(tr)):
+        tds = tr[i].find_all('td')
+        data = [''] * 3  # 初始化data
+        data[0] = tds[0].get_text()#日期
+        data[1] = tds[1].get_text()#单位净值
+        data[2] = tds[2].get_text()#累计净值
+        datas.append(data)
+    for i in range(len(tr)-1):
+        print(datas[i])
+    return datas
+
 
