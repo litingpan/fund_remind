@@ -2,7 +2,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-def getFundData():
+def getCurFundData():
     datas = []
     # data = {'日期':'03-09', '代码':'000001', '简称':'华夏成长', '净值':'1.1450', '累计净值':'3.5560', '日增值':'0.0100',
     #         '日增长':'0.8811', '周增':'2.1409', '月增':'9.4646', '季增':'3.0603', '半年增':'4.0782', '年增':'13.1117'}
@@ -21,7 +21,7 @@ def getFundData():
     tr = soup.find_all('tr', attrs={"onmouseout": "this.bgColor='#f8ffff';"})
     for i in range(len(tr)):
         tds = tr[i].find_all('td')
-        data = [''] * 12  # 初始化data
+        data = [''] * 13  # 初始化data
         data[0] = tds[1].get_text()#日期
         data[1] = tds[2].get_text()#代码
         data[2] = tds[3].get_text()#简称
@@ -34,7 +34,13 @@ def getFundData():
         data[9] = tds[11].get_text()#季增
         data[10] = tds[12].get_text()#半年增
         data[11] = tds[13].get_text()#年增
+        tmp = tds[15].find_all('a')
+        data[12] = tmp[1].get('href')#网址链接
         datas.append(data)
     for i in range(len(tr)):
         print(datas[i])
     return datas
+
+
+# def getHistoryFundData():
+
