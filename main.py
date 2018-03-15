@@ -5,7 +5,7 @@ import time
 from debug_log import log_write
 
 
-# log_write("start------------------------->")
+log_write("start------------------------->")
 
 # datas = data_base.getCurrentData()
 # data_base.saveCurrentData(datas)
@@ -14,7 +14,7 @@ from debug_log import log_write
 data_base.getHistoryData('000001')
 
 
-# log_write("---------------------------->end")
+log_write("---------------------------->end")
 
 
 

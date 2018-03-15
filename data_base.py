@@ -65,28 +65,30 @@ def saveCurrentData(datas):
 def getHistoryData(code):
     datas = []
     url = "http://info.chinafund.cn/fund/" + code + "/jjjz/"
-    #网站交互
-    # browser = webdriver.Chrome(abspath)
-    # browser.implicitly_wait(30)
-    # browser.get(url)
-    # browser.find_element_by_id('startdate').clear()
-    # browser.find_element_by_id('startdate').send_keys('2017-02-15')
-    # browser.find_element_by_id("Button1").click()
-    # browser.quit()
 
-    r = requests.get(url)
-    #如果网址重定向
-    if r.url != url or r.status_code != 200:
-        log_write("open " + url + " fail, status_code = " + str(r.status_code))
-        print(r.status_code)
-        return datas
-    if r.encoding == 'ISO-8859-1':
-        encodings = requests.utils.get_encodings_from_content(r.text)
-        if encodings:
-            encoding = encodings[0]
-        else:
-            encoding = r.apparent_encoding
-        html_doc = r.content.decode(encoding, 'replace')
+    # r = requests.get(url)
+    # #如果网址重定向
+    # if r.url != url or r.status_code != 200:
+    #     log_write("open " + url + " fail, status_code = " + str(r.status_code))
+    #     print(r.status_code)
+    #     return datas
+    # if r.encoding == 'ISO-8859-1':
+    #     encodings = requests.utils.get_encodings_from_content(r.text)
+    #     if encodings:
+    #         encoding = encodings[0]
+    #     else:
+    #         encoding = r.apparent_encoding
+    #     html_doc = r.content.decode(encoding, 'replace')
+
+    #网站交互
+    browser = webdriver.Chrome(abspath)
+    browser.implicitly_wait(30)
+    browser.get(url)
+    browser.find_element_by_id('startdate').clear()
+    browser.find_element_by_id('startdate').send_keys('2017-02-15')
+    browser.find_element_by_id("Button1").click()
+    html_doc = browser.page_source
+    browser.quit()
 
     soup = BeautifulSoup(html_doc, 'lxml')
     trs = soup.find_all(id='lsjz')
@@ -106,7 +108,7 @@ def getHistoryData(code):
         return datas
 
 def saveHistoryDatas(cur_datas):
-    for i in range(3810, len(cur_datas)):
+    for i in range(len(cur_datas)):
         code = cur_datas[i][1]
         datas = getHistoryData(code)
         if len(datas) == 0:
