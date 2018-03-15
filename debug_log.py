@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import time
-file_name = 'log.txt'
+file_name = "log/" + time.strftime("%y-%m") + "_log.txt"
 
 def log_write(str):
     log = open(file_name, 'a')

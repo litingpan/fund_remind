@@ -9,7 +9,12 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains  # 引入ActionChains鼠标操作类
 from selenium.webdriver.common.keys import Keys  # 引入keys类操作
 import os
+from selenium.webdriver.chrome.options import Options
+
 abspath = os.path.abspath(r"C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe")
+chrome_options = Options()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--disable-gpu')
 
 def getCurrentData():
     datas = []
@@ -54,7 +59,7 @@ def saveCurrentData(datas):
     if len(datas) == 0:
         return
     file_name = datas[0][0]
-    f = open(file_name + '.txt', 'w')
+    f = open("data2/"+ file_name + ".txt", 'w')
     for i in range(len(datas)):
         for j in range(len(datas[i])):
             f.write(datas[i][j] + ' ')
@@ -81,14 +86,20 @@ def getHistoryData(code):
     #     html_doc = r.content.decode(encoding, 'replace')
 
     #网站交互
-    browser = webdriver.Chrome(abspath)
+    browser = webdriver.Chrome(abspath, chrome_options=chrome_options)
+    # browser = webdriver.Chrome(abspath)
     browser.implicitly_wait(30)
     browser.get(url)
-    browser.find_element_by_id('startdate').clear()
-    browser.find_element_by_id('startdate').send_keys('2017-02-15')
-    browser.find_element_by_id("Button1").click()
-    html_doc = browser.page_source
-    browser.quit()
+    if browser.current_url != url:
+        print(url + "url redirection")
+        return datas
+    else:
+        time.sleep(0.1)
+        browser.find_element_by_id('startdate').clear()
+        browser.find_element_by_id('startdate').send_keys('2017-01-01')
+        browser.find_element_by_id("Button1").click()
+        html_doc = browser.page_source
+        browser.quit()
 
     soup = BeautifulSoup(html_doc, 'lxml')
     trs = soup.find_all(id='lsjz')
@@ -108,7 +119,7 @@ def getHistoryData(code):
         return datas
 
 def saveHistoryDatas(cur_datas):
-    for i in range(len(cur_datas)):
+    for i in range(108, len(cur_datas)):
         code = cur_datas[i][1]
         datas = getHistoryData(code)
         if len(datas) == 0:

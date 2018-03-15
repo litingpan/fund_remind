@@ -7,16 +7,14 @@ from debug_log import log_write
 
 log_write("start------------------------->")
 
-# datas = data_base.getCurrentData()
-# data_base.saveCurrentData(datas)
-# data_base.saveHistoryDatas(datas)
+datas = data_base.getCurrentData()
+data_base.saveCurrentData(datas)
+data_base.saveHistoryDatas(datas)
 
-data_base.getHistoryData('000001')
+# data_base.getHistoryData('002145')
 
 
 log_write("---------------------------->end")
-
-
 
 
 
