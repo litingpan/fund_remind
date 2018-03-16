@@ -10,6 +10,7 @@ from selenium.webdriver.common.action_chains import ActionChains  # 引入Action
 from selenium.webdriver.common.keys import Keys  # 引入keys类操作
 import os
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 abspath = os.path.abspath(r"C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe")
 chrome_options = Options()
@@ -86,20 +87,34 @@ def getHistoryData(code):
     #     html_doc = r.content.decode(encoding, 'replace')
 
     #网站交互
-    browser = webdriver.Chrome(abspath, chrome_options=chrome_options)
     # browser = webdriver.Chrome(abspath)
+    browser = webdriver.Chrome(abspath, chrome_options=chrome_options)
     browser.implicitly_wait(30)
-    browser.get(url)
+    error = False
+    try:
+        browser.get(url)
+    except TimeoutException:
+        error = True
+        print(code + ": Time out")
+        log_write(code + ": Time out")
     if browser.current_url != url:
+        error = True
         print(url + "url redirection")
-        return datas
     else:
-        time.sleep(0.1)
-        browser.find_element_by_id('startdate').clear()
-        browser.find_element_by_id('startdate').send_keys('2017-01-01')
-        browser.find_element_by_id("Button1").click()
-        html_doc = browser.page_source
-        browser.quit()
+        try:
+            date = browser.find_element_by_id("startdate")
+            date.clear()
+            date.send_keys("2017-01-01")
+            browser.find_element_by_id("Button1").click()
+            html_doc = browser.page_source
+        except NoSuchElementException:
+            error = True
+            print("No element")
+            log_write(code + ": No element")
+        finally:
+            browser.quit()
+    if error:
+        return datas
 
     soup = BeautifulSoup(html_doc, 'lxml')
     trs = soup.find_all(id='lsjz')
@@ -119,7 +134,7 @@ def getHistoryData(code):
         return datas
 
 def saveHistoryDatas(cur_datas):
-    for i in range(108, len(cur_datas)):
+    for i in range(871, len(cur_datas)):
         code = cur_datas[i][1]
         datas = getHistoryData(code)
         if len(datas) == 0:
