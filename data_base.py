@@ -12,6 +12,14 @@ import os
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
+
+DATA_PATH = "data/" #history data
+DATA_PATH2 = "data2/" #current data
+
+
+
+
+
 abspath = os.path.abspath(r"C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe")
 chrome_options = Options()
 chrome_options.add_argument('--headless')
@@ -59,15 +67,16 @@ def getCurrentData():
 def saveCurrentData(datas):
     if len(datas) == 0:
         return
-    file_name = datas[0][0]
-    f = open("data2/"+ file_name + ".txt", 'w')
+    file_name = time.strftime("%y-") + datas[0][0]
+    f = open(DATA_PATH2 + file_name + ".txt", 'w')
     for i in range(len(datas)):
         for j in range(len(datas[i])):
             f.write(datas[i][j] + ' ')
         f.write('\n')
 
 
-
+#输入基金代码
+#返回 datas = [["日期", "单位净值", "累计净值"],...]
 def getHistoryData(code):
     datas = []
     url = "http://info.chinafund.cn/fund/" + code + "/jjjz/"
@@ -139,7 +148,7 @@ def saveHistoryDatas(cur_datas):
         if len(datas) == 0:
             log_write('error code: ' + code)
         else:
-            f = open("data/" + str(i+1) + ".txt", 'a')
+            f = open(DATA_PATH + str(i+1) + ".txt", 'a')
             for j in range(len(datas)):
                 f.write(code + ' ')#基金代码
                 f.write(datas[j][0] + ' ')#日期
@@ -148,3 +157,44 @@ def saveHistoryDatas(cur_datas):
             f.close()
         print(time.strftime("%H:%M:%S") + ': ' + str(i+1))
         time.sleep(0.1)
+
+#返回 datas = [["基金代码", "日期", "单位净值", "累计净值"],...]
+def readHistoryDatas():
+    datas = []
+    file_names = []
+    dir = DATA_PATH
+    for root, dirs, files in os.walk(dir):
+        for file in files:
+            file_names.append(os.path.join(root, file))
+
+    for file_name in file_names:
+        with open(file_name) as file:
+            while True:
+                line = file.readline()
+                if not line:
+                    break
+                data = [''] * 4
+                data[0], data[1], data[2], data[3] = [v for v in line.split()]
+                datas.append(data)
+    return datas
+
+def readCurrentData():
+    datas = []
+    file_names = []
+    dir = DATA_PATH2
+    for root, dirs, files in os.walk(dir):
+        for file in files:
+            file_names.append(os.path.join(root, file))
+
+    for file_name in file_names:
+        with open(file_name) as file:
+            while True:
+                line = file.readline()
+                if not line:
+                    break
+                data = [''] * 13
+                # data[0], data[1], data[2], data[3] = [v for v in line.split()]
+                for i,v in enumerate(line.split()):
+                    data[i] = v
+                datas.append(data)
+    return datas
