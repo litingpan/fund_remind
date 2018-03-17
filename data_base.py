@@ -90,13 +90,13 @@ def getHistoryData(code):
     # browser = webdriver.Chrome(abspath)
     browser = webdriver.Chrome(abspath, chrome_options=chrome_options)
     browser.implicitly_wait(30)
-    error = False
     try:
         browser.get(url)
     except TimeoutException:
-        error = True
         print(code + ": Time out")
         log_write(code + ": Time out")
+        return datas
+    error = False
     if browser.current_url != url:
         error = True
         print(url + "url redirection")
@@ -111,8 +111,7 @@ def getHistoryData(code):
             error = True
             print("No element")
             log_write(code + ": No element")
-        finally:
-            browser.quit()
+    browser.quit()
     if error:
         return datas
 
@@ -134,7 +133,7 @@ def getHistoryData(code):
         return datas
 
 def saveHistoryDatas(cur_datas):
-    for i in range(871, len(cur_datas)):
+    for i in range(2495, len(cur_datas)):
         code = cur_datas[i][1]
         datas = getHistoryData(code)
         if len(datas) == 0:
