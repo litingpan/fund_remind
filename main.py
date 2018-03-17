@@ -7,14 +7,18 @@ from debug_log import log_write
 
 log_write("start------------------------->")
 
-# datas = data_base.getCurrentData()
+datas = data_base.getCurrentData()
 # data_base.saveCurrentData(datas)
 # data_base.saveHistoryDatas(datas)
 
 # data_base.getHistoryData('002145')
 
-data_base.readHistoryDatas()
-data_base.readCurrentData()
+# data_base.readHistoryDatas()
+# data_base.readCurrentData()
+
+usr_datas = data_base.readUsrData()
+analysis.fundRemind(datas, usr_datas)
+
 log_write("---------------------------->end")
 
 

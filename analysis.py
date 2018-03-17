@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from debug_log import log_write
 
 
 def isDigitalString(data):
@@ -23,3 +24,55 @@ def analyzeFund(datas):
             if (b > c and d > e):
                 worth_purchase.append(data)
     return worth_purchase
+
+# #获取当前数据的单位净值
+# def extractCurDataValue(datas):
+
+
+
+def fundRemind(cur_datas, usr_datas):
+    # values = usr_datas.deepcopy()
+    values = usr_datas.copy()
+    for i in range(len(usr_datas)):
+        code = usr_datas[i][0]
+        flag = False
+        for j in range(len(cur_datas)):
+            if code == cur_datas[j][1]:
+                values[i].append(cur_datas[j][3])
+                flag = True
+                break
+        if not flag:
+            values[i].append("--")
+            log_write(code + "can't find!")
+    #数据分析
+    error = [] #出现错误
+    loss = [] #损失
+    sale = [] #可卖出
+    for i in range(len(values)):
+        if values[i][6] == "--":
+            values[i].append("--")
+            error.append(values[i])
+            continue
+        cur_value = float(values[i][6])
+        pre_value = float(values[i][3])
+        ratio = (cur_value - pre_value)/pre_value
+        loss_ratio = float(values[i][4])
+        sale_ratio = float(values[i][5])
+        if ratio < loss_ratio:
+            values[i].append(str(ratio))
+            loss.append(values[i])
+        if ratio > sale_ratio:
+            values[i].append(str(ratio))
+            sale.append(values[i])
+
+
+
+
+
+
+
+
+# def fundRecommand(history_datas, cur_datas):
+#     datas = []
+
+

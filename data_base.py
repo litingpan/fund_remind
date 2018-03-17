@@ -15,6 +15,7 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 DATA_PATH = "data/" #history data
 DATA_PATH2 = "data2/" #current data
+USR_PURCHASE_FILE = "usr/fund_purchase.txt"
 
 
 
@@ -198,3 +199,23 @@ def readCurrentData():
                     data[i] = v
                 datas.append(data)
     return datas
+
+def readUsrData():
+    k = 0
+    datas = []
+    with open(USR_PURCHASE_FILE) as file:
+        while True:
+            line = file.readline()
+            if not line:
+                log_write(USR_PURCHASE_FILE + " not data")
+                break
+            k += 1
+            #["基金代码", "基金名称", "买入日期", "买入净值", "预设跌幅", "预设涨幅"]
+            data = [' ']*6
+            for i, v in enumerate(line.split()):
+                data[i] = v
+            if k > 1:
+                datas.append(data)
+    return datas
+
+
