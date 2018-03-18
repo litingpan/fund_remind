@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import time
 from debug_log import log_write
+from data_type import Fund
 
 #网站交互
 from selenium import webdriver
@@ -16,6 +17,7 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 DATA_PATH = "data/" #history data
 DATA_PATH2 = "data2/" #current data
 USR_PURCHASE_FILE = "usr/fund_purchase.txt"
+FUND_DATA_FILE = "usr/funds.txt"
 
 
 
@@ -46,7 +48,8 @@ def getCurrentData():
     for i in range(len(tr)):
         tds = tr[i].find_all('td')
         data = [''] * 13  # 初始化data
-        data[0] = tds[1].get_text()#日期
+        #统一日期的格式
+        data[0] = time.strftime("%Y-") + tds[1].get_text()#日期
         data[1] = tds[2].get_text()#代码
         data[2] = tds[3].get_text()#简称
         data[3] = tds[5].get_text()#净值
@@ -68,7 +71,7 @@ def getCurrentData():
 def saveCurrentData(datas):
     if len(datas) == 0:
         return
-    file_name = time.strftime("%y-") + datas[0][0]
+    file_name = datas[0][0]
     f = open(DATA_PATH2 + file_name + ".txt", 'w')
     for i in range(len(datas)):
         for j in range(len(datas[i])):
@@ -217,5 +220,56 @@ def readUsrData():
             if k > 1:
                 datas.append(data)
     return datas
+
+def saveFundData(funds):
+    file = open(FUND_DATA_FILE, 'w')
+    for i in range(len(funds)):
+        file.write(funds[i].code + ' ')
+        file.write(funds[i].name + ' ')
+        for k, v in funds[i].values.items():
+            file.write(k + ' ' + str(v) + ' ')
+        file.write('\n')
+    file.close()
+
+def readFundData():
+    funds = []
+    sum = 0
+    print("readFundData begin: " + time.strftime("%H:%M:%S"))
+    with open(FUND_DATA_FILE) as file:
+        while True:
+            line = file.readline()
+            if not line:
+                log_write(FUND_DATA_FILE + "not data")
+                break
+            sum += 1
+            # if sum > 100:
+            #     break
+            f = Fund('')
+            date = ''
+            val = 0.0
+            for i, v in enumerate(line.split()):
+                if i == 0:
+                    f.setCode(v)
+                elif i == 1:
+                    f.setName(v)
+                else:
+                    if i%2 == 0:
+                        date = v
+                    else:
+                        val = float(v)
+                        f.addValue(date, val)
+            funds.append(f)
+    print("readFundData end: " + time.strftime("%H:%M:%S"))
+    return funds
+
+
+
+
+
+
+
+
+
+
 
 
