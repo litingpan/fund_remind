@@ -65,6 +65,24 @@ def fundRemind(cur_datas, usr_datas):
         if ratio > sale_ratio:
             values[i].append(str(ratio))
             sale.append(values[i])
+    # ["基金代码", "基金名称", "买入日期", "买入净值", "预设跌幅", "预设涨幅", "当前涨跌幅度"]
+    return error, loss, sale
+
+def formatText(error, loss, sale):
+    content = "有问题基金：\n"
+    for i in range(len(error)):
+        c = error[i][0] + " " + error[i][1] + " " + error[i][6] + "\n"
+        content += c
+    content += "需止损基金：\n"
+    for i in range(len(loss)):
+        c = loss[i][0] + " " + loss[i][1] + " " + loss[i][6] + "\n"
+        content += c
+    content += "可卖出基金：\n"
+    for i in range(len(sale)):
+        c = sale[i][0] + " " + sale[i][1] + " " + sale[i][6] + "\n"
+        content += c
+    return content
+
 
 
 
@@ -154,18 +172,20 @@ def curFundValue(fund):
     return cur_value
 
 
-#基金买入推荐
+#基金买入推荐, ratio为跌幅
 def fundRecommand(funds, ratio):
     worth_purchase = []#[基金代码， 名称，幅度比例]
     for i in range(len(funds)):
         max = maxFundValue(funds[i])
         cur = curFundValue(funds[i])
-        r = cur/max
+        r = (max - cur)/max
         w = []
-        if r < ratio:
+        if r > ratio:
             w.append(funds[i].code)
             w.append(funds[i].name)
             w.append(r)
+            w.append(max)
+            w.append(cur)
             worth_purchase.append(w)
     return worth_purchase
 

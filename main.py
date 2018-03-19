@@ -3,6 +3,7 @@ import data_base
 import analysis
 import time
 from debug_log import log_write
+from email_remind import sendEmail
 import datetime
 from data_type import Fund
 
@@ -18,52 +19,54 @@ from data_type import Fund
 # data_base.readHistoryDatas()
 # data_base.readCurrentData()
 
-#基金推荐
-# datas = data_base.getCurrentData()
-# usr_datas = data_base.readUsrData()
-# analysis.fundRemind(datas, usr_datas)
 
 
+# funds = []
+# f = Fund("00001")
+# f.addName("华夏")
+# f.addValue("2017-03-08", 1.34)
+# f.addValue("2017-03-07", 1.0)
+# f.addValue("2017-03-06", 1.1)
+# funds.append(f)
+# analysis.fundRecommand(funds, 0.95)
 
 
 
 def main():
     log_write("start------------------------->")
+    print("start...")
 
-
+    #基金推荐
     # history_datas = data_base.readHistoryDatas()
     # cur_datas = data_base.readCurrentData()
     # funds = analysis.deleteErrData(history_datas, cur_datas, "2017-09-01")
     # data_base.saveFundData(funds)
-    funds = data_base.readFundData()
-    analysis.fundRecommand(funds, 0.5)
+    # funds = data_base.readFundData()
+    # analysis.fundRecommand(funds, 0.5)
 
-    # funds = []
-    # f = Fund("00001")
-    # f.addName("华夏")
-    # f.addValue("2017-03-08", 1.34)
-    # f.addValue("2017-03-07", 1.0)
-    # f.addValue("2017-03-06", 1.1)
-    # funds.append(f)
-    # analysis.fundRecommand(funds, 0.95)
-
-
-    # begin_date = "2017-04-13"
-    # date_thresh = datetime.datetime.strptime(begin_date, "%Y-%m-%d")
-    # for i in range(len(funds)):
-    #     kv = funds[i].values
-    #     for k in list(kv):
-    #         date = datetime.datetime.strptime(k, "%Y-%m-%d")
-    #         if date < date_thresh:
-    #             funds[i].values.pop(k)
-
-    print("sdfs")
-
-log_write("---------------------------->end")
+    # 基金提醒
+    time_thresh = datetime.datetime.strptime("22:00:00", "%H:%M:%S")
+    while True:
+        cur_time = datetime.datetime.strptime(time.strftime("%H:%M:%S"), "%H:%M:%S")
+        if cur_time > time_thresh:
+            cur_datas = data_base.getCurrentData()
+            # cur_datas = data_base.readCurrentData()
+            usr_datas = data_base.readUsrData()
+            err, loss, sale = analysis.fundRemind(cur_datas, usr_datas)
+            content = analysis.formatText(err, loss, sale)
+            print(content)
+            sendEmail(content)
+            break
+        else:
+            time.sleep(60)
+            pass
 
 
 
-# print("finish")
+
+
+    log_write("---------------------------->end")
+    print("finish")
 
 
 if __name__ == "__main__":
