@@ -13,7 +13,7 @@ sender = "litp1605@163.com"    # 发件人邮箱(最好写全, 不然会失败)
 receivers = ["litp1605@163.com"]
 
 # content = '我用Python'
-title = 'fund_remind_' + time.strftime("%Y-%m")  # 邮件主题
+title = 'fund_remind_' + time.strftime("%Y-%m-%d")  # 邮件主题
 
 def sendEmail(content):
 

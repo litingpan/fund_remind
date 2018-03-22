@@ -187,6 +187,7 @@ def fundRecommand(funds, ratio):
             w.append(max)
             w.append(cur)
             worth_purchase.append(w)
+            print(w[0] + " " + w[1] + ", ratio = " + str(w[2]) + ", max = " + str(w[3]) + ", cur = " + str(w[4]))
     return worth_purchase
 
 
