@@ -117,7 +117,7 @@ def getHistoryData(code):
         try:
             date = browser.find_element_by_id("startdate")
             date.clear()
-            date.send_keys("2015-01-01")
+            date.send_keys("2017-01-01")
             browser.find_element_by_id("Button1").click()
             html_doc = browser.page_source
         except NoSuchElementException:
