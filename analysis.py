@@ -7,28 +7,6 @@ import datetime
 FUND_MIN_VALUE = -100.0 #最小净值
 FUND_MAX_VALUE = 100.0 #最大净值
 
-# def isDigitalString(data):
-#     for i in range(3, len(data)):
-#         if data[i] == '--':
-#             return False
-#     return True
-#
-#
-# def analyzeFund(datas):
-#     worth_purchase = []
-#     for i in range(len(datas)):
-#         data = datas[i]
-#         if isDigitalString(data):
-#             f = float(data[11])
-#             e = f - float(data[6])#一天前的值
-#             d = f - float(data[7])#一周前的值
-#             c = f - float(data[8])#一个月前的值
-#             b = f - float(data[9])#一个季度前的值
-#             a = f - float(data[10])#半年前的值
-#             # if (float(data[3]) > 1.3 and float(data[4]) >1.5 and a > b and b < c and d < c and e < d ):
-#             if (b > c and d > e):
-#                 worth_purchase.append(data)
-#     return worth_purchase
 
 #基金卖出提醒
 def fundRemind(cur_datas, usr_datas):
@@ -80,6 +58,13 @@ def formatText(error, loss, sale):
     content += "可卖出基金：\n"
     for i in range(len(sale)):
         c = sale[i][0] + " " + sale[i][1] + " " + sale[i][6] + "\n"
+        content += c
+    return content
+
+def formatText2(recommend):
+    content = "\n推荐基金：\n"
+    for i in range(len(recommend)):
+        c = recommend[i][0] + " " + recommend[i][1] + " " + recommend[i][2] + "\n"
         content += c
     return content
 
@@ -189,6 +174,31 @@ def fundRecommand(funds, ratio):
             worth_purchase.append(w)
             print(w[0] + " " + w[1] + ", ratio = " + str(w[2]) + ", max = " + str(w[3]) + ", cur = " + str(w[4]))
     return worth_purchase
+
+
+def fundRecommand2(refe_datas, cur_datas, ratio):
+
+    #code 名称 跌幅
+    datas = []
+    for i in range(len(refe_datas)):
+        data = []
+        if refe_datas[i][3] != "--":
+            for j in range(len(cur_datas)):
+                if refe_datas[i][1] == cur_datas[j][1] and cur_datas[j][3] != "--":
+                    r = float(refe_datas[i][3])
+                    c = float(cur_datas[j][3])
+                    percent = (r-c)/r
+                    if percent > ratio:
+                        data.append(refe_datas[i][1])
+                        data.append(refe_datas[i][2])
+                        data.append("%.3f" % percent)
+                        datas.append(data)
+    return datas
+
+
+
+
+
 
 
 

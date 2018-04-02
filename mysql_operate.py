@@ -45,7 +45,7 @@ def insertCurrentData():
             # 提交SQL
             connection.commit()
             print("insert new fund:" + code)
-            # log_write("insert new fund:" + code)
+            log_write("insert new fund:" + code)
 
         # funds_info表插入数据
         # 查询判断是否有存在
@@ -82,7 +82,7 @@ def insertHistoryWorth():
     for c in codes:
         code = c['code']
         number += 1
-        if number<564:
+        if number<5830:
             continue
         datas = data_base.getHistoryData(code)
         if len(datas) == 0:

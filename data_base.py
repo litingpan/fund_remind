@@ -18,6 +18,7 @@ DATA_PATH = "data/" #history data
 DATA_PATH2 = "data2/" #current data
 USR_PURCHASE_FILE = "usr/fund_purchase.txt"
 FUND_DATA_FILE = "usr/funds.txt"
+REFERENCE_DATA_FILE = "usr/2018-03-30.txt"
 
 
 
@@ -261,6 +262,24 @@ def readFundData():
             funds.append(f)
     print("readFundData end: " + time.strftime("%H:%M:%S"))
     return funds
+
+
+def readReferData():
+    k = 0
+    datas = []
+    with open(REFERENCE_DATA_FILE) as file:
+        while True:
+            line = file.readline()
+            if not line:
+                log_write(REFERENCE_DATA_FILE + " not data")
+                break
+            k += 1
+            data = [' ']*13
+            for i, v in enumerate(line.split()):
+                data[i] = v
+            if k > 1:
+                datas.append(data)
+    return datas
 
 
 
