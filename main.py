@@ -47,6 +47,7 @@ def main():
     while True:
         cur_time = datetime.datetime.strptime(time.strftime("%H:%M:%S"), "%H:%M:%S")
         if cur_time > time_thresh:
+        # if True:
             #基金提醒
             cur_datas = data_base.getCurrentData()
             # cur_datas = data_base.readCurrentData()
@@ -57,7 +58,7 @@ def main():
 
             #基金推荐
             refe_datas = data_base.readReferData()
-            recommend = analysis.fundRecommand2(refe_datas, cur_datas, 0.6)
+            recommend = analysis.fundRecommand2(refe_datas, cur_datas, 0.35)
             content += analysis.formatText2(recommend)
             print(content)
             sendEmail(content)
